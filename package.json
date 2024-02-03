@@ -1,9 +1,9 @@
 {
-  "name": "osu-map",
+  "name": "@teages/osu-map",
   "type": "module",
   "version": "0.0.0",
   "packageManager": "pnpm@8.12.1",
-  "description": "",
+  "description": "Parse an osu! map into a structured and typed object.",
   "license": "MIT",
   "repository": "Teages/osu-map",
   "sideEffects": false,
@@ -39,9 +39,13 @@
     "eslint": "^8.56.0",
     "eslint-config-unjs": "^0.2.1",
     "jiti": "^1.21.0",
+    "pathe": "^1.1.2",
     "prettier": "^3.1.1",
     "typescript": "^5.3.3",
     "unbuild": "^2.0.0",
     "vitest": "^1.1.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

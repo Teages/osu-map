@@ -1,17 +1,4 @@
-/* eslint-disable no-console */
-import { parseMap } from '../src'
-
-const mapFile = useRawMap()
-const map = parseMap(mapFile)
-console.log(`Map: ${map.metadata.TitleUnicode} - ${map.metadata.ArtistUnicode} [${map.metadata.Version}]`)
-const firstTiming = map.timingPoints[0]
-if (!firstTiming || firstTiming.type !== 'uninherited') {
-  throw new Error('First timing point must be uninherited.')
-}
-console.log(`BPM of the first uninherited: ${firstTiming.BPM}`)
-
-function useRawMap() {
-  return `osu file format v14
+osu file format v14
 
 [General]
 AudioFilename: audio.ogg
@@ -287,5 +274,3 @@ Combo6 : 144,246,133
 306,156,87280,1,4,1:0:0:0:
 401,229,87608,6,0,P|429:216|457:213,2,60,8|0|8,0:3|0:0|3:0,0:0:0:0:
 363,276,88100,1,0,3:0:0:0:
-`
-}
