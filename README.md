@@ -70,6 +70,14 @@ console.log(`BPM of the first uninherited: ${firstTiming.BPM}`)
 
 Published under [MIT License](./LICENSE).
 
+## Special Thanks
+
+Test maps from:
+  - [Garden's osu!takio map](https://osu.ppy.sh/beatmapsets/1732903#taiko/3542680)
+  - [Hidden is fun's osu!mania map](https://osu.ppy.sh/beatmapsets/1528284#mania/3208358)
+
+They are used for testing purposes only and not MIT licensed.
+
 <!-- Badges -->
 
 [npm-version-src]: https://img.shields.io/npm/v/@teages/osu-map?style=flat&colorA=18181B&colorB=F0DB4F
