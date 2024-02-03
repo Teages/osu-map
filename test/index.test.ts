@@ -1,8 +1,8 @@
-import { expect, it, describe } from "vitest";
-import {} from "../src";
+import { describe, expect, it } from 'vitest'
+import {} from '../src'
 
-describe("packageName", () => {
-  it.todo("pass", () => {
-    expect(true).toBe(true);
-  });
-});
+describe('osu-map', () => {
+  it.todo('pass', () => {
+    expect(true).toBe(true)
+  })
+})

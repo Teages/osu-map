@@ -1,4 +1,4 @@
-# packageName
+# osu-map
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
@@ -14,26 +14,26 @@ Install package:
 
 ```sh
 # npm
-npm install packageName
+npm install osu-map
 
 # yarn
-yarn add packageName
+yarn add osu-map
 
 # pnpm
-pnpm install packageName
+pnpm install osu-map
 
 # bun
-bun install packageName
+bun install osu-map
 ```
 
 Import:
 
 ```js
 // ESM
-import {} from "packageName";
+import { parseMap } from 'osu-map'
 
 // CommonJS
-const {} = require("packageName");
+const { parseMap } = require('osu-map')
 ```
 
 ## Development
@@ -52,13 +52,13 @@ Published under [MIT License](./LICENSE).
 
 <!-- Badges -->
 
-[npm-version-src]: https://img.shields.io/npm/v/packageName?style=flat&colorA=18181B&colorB=F0DB4F
-[npm-version-href]: https://npmjs.com/package/packageName
-[npm-downloads-src]: https://img.shields.io/npm/dm/packageName?style=flat&colorA=18181B&colorB=F0DB4F
-[npm-downloads-href]: https://npmjs.com/package/packageName
+[npm-version-src]: https://img.shields.io/npm/v/osu-map?style=flat&colorA=18181B&colorB=F0DB4F
+[npm-version-href]: https://npmjs.com/package/osu-map
+[npm-downloads-src]: https://img.shields.io/npm/dm/osu-map?style=flat&colorA=18181B&colorB=F0DB4F
+[npm-downloads-href]: https://npmjs.com/package/osu-map
 
-<!-- [codecov-src]: https://img.shields.io/codecov/c/gh/unjs/packageName/main?style=flat&colorA=18181B&colorB=F0DB4F
-[codecov-href]: https://codecov.io/gh/unjs/packageName
+<!-- [codecov-src]: https://img.shields.io/codecov/c/gh/unjs/osu-map/main?style=flat&colorA=18181B&colorB=F0DB4F
+[codecov-href]: https://codecov.io/gh/unjs/osu-map
 
-[bundle-src]: https://img.shields.io/bundlephobia/minzip/packageName?style=flat&colorA=18181B&colorB=F0DB4F
-[bundle-href]: https://bundlephobia.com/result?p=packageName -->
+[bundle-src]: https://img.shields.io/bundlephobia/minzip/osu-map?style=flat&colorA=18181B&colorB=F0DB4F
+[bundle-href]: https://bundlephobia.com/result?p=osu-map -->
