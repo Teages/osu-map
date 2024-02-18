@@ -1,0 +1,64 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`issues > #1 1`] = `
+[
+  {
+    "combo": {
+      "newCombo": false,
+      "skip": 0,
+    },
+    "curvePoints": [
+      {
+        "x": 155,
+        "y": 177,
+      },
+      {
+        "x": 176,
+        "y": 192,
+      },
+    ],
+    "curveType": "P",
+    "edgeHitSound": [
+      {
+        "additionSet": "auto",
+        "normalSet": "auto",
+        "sample": {
+          "clap": false,
+          "finish": false,
+          "normal": false,
+          "whistle": false,
+        },
+      },
+      {
+        "additionSet": "auto",
+        "normalSet": "auto",
+        "sample": {
+          "clap": false,
+          "finish": false,
+          "normal": false,
+          "whistle": false,
+        },
+      },
+    ],
+    "hitSound": {
+      "additionSet": "auto",
+      "filename": undefined,
+      "index": 0,
+      "normalSet": "auto",
+      "sample": {
+        "clap": false,
+        "finish": false,
+        "normal": false,
+        "whistle": false,
+      },
+      "volume": 0,
+    },
+    "length": 52.5,
+    "slides": 1,
+    "time": 9759,
+    "type": "slider",
+    "x": 131,
+    "y": 169,
+  },
+]
+`;

@@ -78,3 +78,55 @@ export function useKVPairParser<
     return res as TResult
   }
 }
+
+export function useStrAutomaton(str: string) {
+  let string = str
+
+  return {
+    // read until the first occurrence of the char, throw error if not found
+    readUntil: (char: string) => {
+      const index = string.indexOf(char)
+      if (index === -1) {
+        throw new Error(`Unexpected end. Maybe missing arguments? Expected ${char}`)
+      }
+      else {
+        const res = string.slice(0, index)
+        string = string.slice(index + 1)
+        return res
+      }
+    },
+
+    // try read until the first occurrence of the char, return the rest if not found, throw error if empty
+    tryReadUntil: (char: string) => {
+      const index = string.indexOf(char)
+      if (index === -1) {
+        if (string === '') {
+          throw new Error(`Unexpected end. Maybe missing arguments? Expected ${char}`)
+        }
+        const res = string
+        string = ''
+        return res
+      }
+      else {
+        const res = string.slice(0, index)
+        string = string.slice(index + 1)
+        return res
+      }
+    },
+
+    // read all remaining string
+    readAll: () => {
+      const res = string
+      string = ''
+      return res
+    },
+
+    // preview the remaining string
+    preview: () => string,
+
+    // add string to the end of the remaining string
+    add: (str: string) => {
+      string += str
+    },
+  }
+}

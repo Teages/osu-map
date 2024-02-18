@@ -1,60 +1,50 @@
+import { useStrAutomaton } from '../utils'
 import { OsuMapMode } from './general'
 
 export function parseHitObjects(lines: string[], mode: OsuMapMode): HitObject[] {
   const items: HitObject[] = []
   lines.forEach((line) => {
-    const [rawX, rawY, rawTime, rawType, rawHitSound, ...rawExtras] = line.split(',').map(v => v.trim())
-    const [x, y, time, typeBit, hitSound] = [rawX, rawY, rawTime, rawType, rawHitSound].map(v => Number(v))
-    const type = parseType(typeBit, mode)
-    const combo = parseCombo(typeBit)
+    const sa = useStrAutomaton(line)
 
-    let rawHitSoundSamples = rawExtras.pop()
-    if (type === 'hold') {
-      // DIRTY CODE: for hold note, it is `x,y,time,type,hitSound,endTime:hitSample`, the final params is separated by `:`
-      const values = rawHitSoundSamples!.split(':')
-      rawExtras.push(values.shift()!)
-      rawHitSoundSamples = values.join(':')
-    }
-
-    const [rawNormalSample, rawAdditionSimple, rawSimpleIndex, rawVolume, filename] = (rawHitSoundSamples ?? '0:0:0:0:').split(':').map(v => v.trim())
-    const [normalSample, additionSimple, index, volume] = [rawNormalSample, rawAdditionSimple, rawSimpleIndex, rawVolume].map(v => Number(v) || 0)
-
-    const item: HitObjectBasic = {
-      x,
-      y,
-      time,
-      combo,
-      hitSound: {
-        normalSet: parseHitSoundSet(normalSample),
-        additionSet: parseHitSoundSet(additionSimple),
-        sample: parseHitSoundEnable(hitSound),
-        index,
-        volume,
-        filename: filename || undefined,
-      },
-    }
+    const x = Number(sa.readUntil(','))
+    const y = Number(sa.readUntil(','))
+    const time = Number(sa.readUntil(','))
+    const type = parseType(Number(sa.readUntil(',')), mode)
+    const hitsoundStr = sa.tryReadUntil(',')
 
     if (type === 'circle') {
+      const hitSampleStr = sa.readAll() || '0:0:0:0:'
       items.push({
-        ...item,
+        x,
+        y,
+        time,
         type,
+        combo: parseCombo(Number(hitsoundStr)),
+        hitSound: parseHitSound(hitsoundStr, hitSampleStr),
       })
     }
+
     else if (type === 'slider') {
-      const curveData = rawExtras.shift()
-      const [curveType, ...rawCurvePoints] = curveData!.split('|').map(v => v.trim())
+      const curveStr = sa.readUntil(',')
+      const [curveType, ...rawCurvePoints] = curveStr.split('|').map(v => v.trim())
       const curvePoints = rawCurvePoints.map((point) => {
         const [x, y] = point.split(':').map(v => v.trim()).map(v => Number(v))
         return { x, y }
       })
-      const slides = Number(rawExtras.shift())
-      const length = Number(rawExtras.shift())
+      const slides = Number(sa.readUntil(','))
+      const length = Number(sa.tryReadUntil(','))
 
-      const edgeHitSoundEnable = rawExtras.shift()!.split('|')
+      if (sa.preview() === '') {
+        // no hitsound for this note, use default
+        const repeatArray = Array.from({ length: slides + 1 }).fill(0)
+        sa.add(`${repeatArray.join('|')},${repeatArray.map(() => '0:0').join('|')}`)
+      }
+
+      const edgeHitSoundEnable = sa.readUntil(',').split('|')
         .map(v => v.trim())
         .map(v => Number(v))
         .map(parseHitSoundEnable)
-      const edgeHitSound = rawExtras.shift()!.split('|').map((hitSound, index) => {
+      const edgeHitSound = sa.tryReadUntil(',').split('|').map((hitSound, index) => {
         const [normalSet, additionSet] = hitSound.split(':').map(v => v.trim())
         const sample = edgeHitSoundEnable[index]
         return {
@@ -63,28 +53,80 @@ export function parseHitObjects(lines: string[], mode: OsuMapMode): HitObject[] 
           sample,
         }
       })
+      const hitSampleStr = sa.readAll() || '0:0:0:0:'
 
       items.push({
-        ...item,
+        x,
+        y,
+        time,
         type,
-        curveType: curveType as any,
+        combo: parseCombo(Number(hitsoundStr)),
+        hitSound: parseHitSound(hitsoundStr, hitSampleStr),
+
+        // slider
+        curveType: curveType as HitObjectSlider['curveType'],
         curvePoints,
         slides,
         length,
         edgeHitSound,
       })
     }
-    else {
-      const endTime = Number(rawExtras[0])
+
+    else if (type === 'spinner') {
+      const endTime = Number(sa.tryReadUntil(','))
+      const hitSampleStr = sa.readAll() || '0:0:0:0:'
       items.push({
-        ...item,
+        x,
+        y,
+        time,
         type,
+        combo: parseCombo(Number(hitsoundStr)),
+        hitSound: parseHitSound(hitsoundStr, hitSampleStr),
+
+        // spinner
+        endTime,
+      })
+    }
+
+    else { // type === 'hold'
+      const endTime = Number(sa.tryReadUntil(':')) // idk why it's `:` instead of `,`
+
+      const hitSampleStr = sa.readAll() || '0:0:0:0:'
+      items.push({
+        x,
+        y,
+        time,
+        type,
+        combo: parseCombo(Number(hitsoundStr)),
+        hitSound: parseHitSound(hitsoundStr, hitSampleStr),
+
+        // hold
         endTime,
       })
     }
   })
 
   return items
+}
+
+function parseHitSound(hitsoundStr: string, hitSampleStr: string) {
+  const { normalSample, additionSimple, index, volume, filename } = parseHitSample(hitSampleStr)
+  return {
+    normalSet: parseHitSoundSet(normalSample),
+    additionSet: parseHitSoundSet(additionSimple),
+    sample: parseHitSoundEnable(Number(hitsoundStr)),
+    index,
+    volume,
+    filename,
+  }
+}
+
+function parseHitSample(hitSampleStr: string) {
+  const [normalSetStr, additionSetStr, indexStr, volumeStr, filename] = hitSampleStr.split(':')
+  const [normalSample, additionSimple, index, volume]
+    = [normalSetStr, additionSetStr, indexStr, volumeStr].map(Number)
+
+  return { normalSample, additionSimple, index, volume, filename: filename || undefined }
 }
 
 function parseHitSoundSet(bit: number): HitSoundSampleSet {
